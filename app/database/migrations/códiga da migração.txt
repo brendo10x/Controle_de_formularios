@@ -1,0 +1,202 @@
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CriarTabelas extends Migration {
+
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+	
+
+		//Criar tabela usuários
+		 Schema::create('usuarios', function(Blueprint $table)
+		{ 
+
+			$table->increments('id');
+
+			$table->string('nome', 100);
+			$table->string('email', 100);
+			$table->string('senha', 100);
+
+			$table->timestamps();
+
+			// Permite relacionamento
+			$table->engine = 'InnoDB';
+		});
+
+		//Criar tabela listas
+		 Schema::create('listas', function(Blueprint $table)
+		{ 
+
+			$table->increments('id');
+
+			$table->string('nome', 100);
+			$table->integer('ordenacao');
+			$table->integer('principal');
+			$table->timestamps();
+
+			// Permite relacionamento
+			$table->engine = 'InnoDB';
+		});
+
+
+		//Criar tabela formulários
+		 Schema::create('formularios', function(Blueprint $table)
+		{ 
+
+			$table->increments('id');
+
+			$table->string('nome', 100);
+			$table->string('instrucao', 255);
+
+			$table->timestamps();
+
+			// Permite relacionamento
+			$table->engine = 'InnoDB';
+		});
+
+		 //Criar tabela item_lista
+		 Schema::create('item_lista', function(Blueprint $table)
+		{
+			  
+			$table->increments('id');
+
+			$table->string('valor', 100);
+	 		
+	 		$table->integer('lista_id')->unsigned();
+
+	 		$table->foreign('lista_id')
+     		->references('id')->on('listas')
+      		->onDelete('cascade');
+
+			$table->timestamps();
+
+			// Permite relacionamento
+			$table->engine = 'InnoDB';
+		});
+
+		 //Criar tabela campo_formulario
+		 Schema::create('campo_formulario', function(Blueprint $table)
+		{ 
+
+			$table->increments('id');
+
+			$table->string('rotulo', 100);
+
+			$table->integer('obrigatorio');
+	 		
+	 		$table->string('variavel', 100);
+
+	 		$table->integer('tipo');
+
+	 		$table->integer('formulario_id')->unsigned();
+
+	 		$table->foreign('formulario_id')
+     		->references('id')->on('formularios')
+      		->onDelete('cascade');
+
+			$table->timestamps();
+
+			// Permite relacionamento
+			$table->engine = 'InnoDB';
+		});
+
+		  //Criar tabela campo_formulario_lista
+		 Schema::create('campo_formulario_lista', function(Blueprint $table)
+		{
+ 
+
+			$table->increments('id');
+ 			
+ 			$table->integer('lista_id')->unsigned();
+	 		
+	 		$table->foreign('lista_id')
+     		->references('id')->on('listas')
+      		->onDelete('cascade');
+
+      		$table->integer('campo_formulario_id')->unsigned();
+
+	 		$table->foreign('campo_formulario_id')
+     		->references('id')->on('campo_formulario')
+      		->onDelete('cascade');
+
+			$table->timestamps();
+
+			// Permite relacionamento
+			$table->engine = 'InnoDB';
+		});
+
+		   //Criar tabela campo_formulario_lista
+		 Schema::create('item_lista_formulario', function(Blueprint $table)
+		{
+ 
+
+			$table->increments('id');
+  			
+  			$table->integer('item_lista_id')->unsigned();
+
+	 		$table->foreign('item_lista_id')
+     		->references('id')->on('item_lista')
+      		->onDelete('cascade');
+
+      		$table->integer('formulario_id')->unsigned();
+
+	 		$table->foreign('formulario_id')
+     		->references('id')->on('formularios')
+      		->onDelete('cascade');
+
+			$table->timestamps();
+
+			// Permite relacionamento
+			$table->engine = 'InnoDB';
+		});
+
+	}
+
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{	
+
+		//Deleta tabela item_lista_formulario
+		Schema::drop('item_lista_formulario');
+
+			//Deleta tabela item_lista
+		Schema::drop('campo_formulario_lista');
+
+			//Deleta tabela campo_formulario
+		Schema::drop('campo_formulario');
+
+		//Deleta tabela item_lista
+		Schema::drop('item_lista');
+
+		//Deleta tabela listas
+		Schema::drop('listas');
+
+		//Deleta tabela formulários
+		Schema::drop('formularios');
+
+		//Deleta tabela usuários
+		Schema::drop('usuarios');
+
+
+
+		
+ 		
+ 	
+
+	
+		
+ 
+	}
+
+}
